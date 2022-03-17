@@ -16,6 +16,8 @@ import Image from 'next/image';
 import { filterData, getFilterValues } from '../utils/filterData';
 import { baseUrl, fetchApi } from '../utils/fetchApi';
 
+import noResult from '../assets/images/noresult.svg';
+
 const SearchFilters = () => {
   const [filters, setFilters] = useState(filterData);
   const [searchTerm, setSearchTerm] = useState('');
@@ -102,6 +104,46 @@ const SearchFilters = () => {
               />
             )}
             {loading && <Spinner margin={'auto'} marginTop="3" />}
+            {showLocations && (
+              <Box height={'300px'} overflow="auto">
+                {locationData?.map((location) => (
+                  <Box
+                    key={location.id}
+                    onClick={() => {
+                      searchProperties({
+                        locationExternalIDs: location.externalID,
+                      });
+                      setShowLocations(false);
+                      setSearchTerm(location.name);
+                    }}
+                  >
+                    <Text
+                      cursor={'pointer'}
+                      bg="gray.200"
+                      p="2"
+                      borderBottom={'1px'}
+                      borderColor="gray.100"
+                    >
+                      {location.name}
+                    </Text>
+                  </Box>
+                ))}
+                {!loading && !locationData.length && (
+                  <Flex
+                    justifyContent={'center'}
+                    alignItems="center"
+                    flexDir={'column'}
+                    marginTop="5"
+                    marginBottom={'5'}
+                  >
+                    <Image src={noResult} alt="no-result" />
+                    <Text fontSize={'xl'} marginTop="3">
+                      Waiting to Search!
+                    </Text>
+                  </Flex>
+                )}
+              </Box>
+            )}
           </Flex>
         )}
       </Flex>
