@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import {
   Menu,
   MenuButton,
@@ -16,14 +17,22 @@ import { FiKey } from 'react-icons/fi';
 
 const Navbar = () => {
   return (
-    <Flex p="2" borderBottom="1px" borderColor="gray.100">
-      <Box fontSize="3xl" color="blue.400" fontWeight="bold">
-        <Link href="/" paddingLeft="2">
-          Realtor
-        </Link>
+    <Flex
+      p={[2, 5]}
+      alignItems="center"
+      justifyContent="center"
+      borderBottom="2px"
+      borderColor="gray.100"
+    >
+      <Box fontSize="2xl" color="gray.600" fontWeight="bold">
+        <Link href="/">Real Estate</Link>
       </Box>
       <Spacer />
-      <Box>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+      >
         <Menu>
           <MenuButton
             as={IconButton}

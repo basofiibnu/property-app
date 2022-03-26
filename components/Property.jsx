@@ -39,6 +39,8 @@ const Property = ({
             alt="house"
             width={400}
             height={260}
+            placeholder="blur"
+            blurDataURL="../assets/images/placeholder.png"
           />
         </Box>
         <Box w="full">
@@ -70,9 +72,13 @@ const Property = ({
             {rooms} <FaBed /> | {baths} <FaBath /> | {millify(area)}{' '}
             sqft <BsGridFill />
           </Flex>
-          <Text fontSize="lg">
+          <Text
+            fontSize="md"
+            color="gray.500"
+            textTransform="lowercase"
+          >
             {title.length > 30
-              ? `${title.substring(0, 30)}...`
+              ? `${title.substring(0, 40)}...`
               : title}
           </Text>
         </Box>
