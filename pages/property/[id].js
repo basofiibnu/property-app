@@ -4,6 +4,7 @@ import { FaBed, FaBath } from 'react-icons/fa';
 import { BsGridFill } from 'react-icons/bs';
 import { GoVerified } from 'react-icons/go';
 import millify from 'millify';
+import { motion } from 'framer-motion';
 import { fetchApi, baseUrl } from '../../utils/fetchApi';
 import ImageScrollbar from '../../components/ImageScrollbar';
 
@@ -25,6 +26,7 @@ const PropertyDetails = ({
     photos,
   },
 }) => {
+  const MotionText = motion(Text);
   return (
     <Box maxWidth={'1000px'} margin="auto" p="4">
       {photos && <ImageScrollbar data={photos} />}
@@ -35,12 +37,14 @@ const PropertyDetails = ({
           justifyContent="space-between"
         >
           <Flex alignItems="center">
-            <Box paddingRight="3" color="green.400">
-              {isVerified && <GoVerified />}
-            </Box>
+            {isVerified && (
+              <Box paddingRight="3" color="green.400">
+                <GoVerified />
+              </Box>
+            )}
             <Text fontWeight="bold" fontSize="lg">
               AED {millify(price)}
-              {rentFrequency && `/${rentFrequency}`}
+              {rentFrequency && ` / ${rentFrequency}`}
             </Text>
           </Flex>
           <Box>
@@ -49,20 +53,61 @@ const PropertyDetails = ({
         </Flex>
         <Flex
           alignItems="center"
-          p="1"
-          justifyContent="space-between"
+          justifyContent="flex-start"
           w="250px"
           color="blue.400"
         >
-          {rooms} <FaBed /> | {baths} <FaBath /> | {millify(area)}{' '}
-          sqft <BsGridFill />
+          <Box>
+            <Text
+              display="flex"
+              alignItems="center"
+              w="50px"
+              justifyContent="space-around"
+            >
+              {rooms} <FaBed /> |
+            </Text>
+          </Box>
+          <Box>
+            <Box>
+              <Text
+                display="flex"
+                alignItems="center"
+                w="50px"
+                justifyContent="space-around"
+              >
+                {baths} <FaBath /> |
+              </Text>
+            </Box>
+          </Box>
+          <Box>
+            <Box>
+              <Text
+                display="flex"
+                alignItems="center"
+                w="100px"
+                justifyContent="space-around"
+              >
+                {millify(area)} sqft <BsGridFill />
+              </Text>
+            </Box>
+          </Box>
         </Flex>
         <Box marginTop={'2'}>
           <Text fontSize="lg" marginBottom={'2'} fontWeight="bold">
             {title}
           </Text>
-          <Text lineHeight={'2'} color="gray.600">
-            {description}
+          <Text lineHeight={'1.5'} color="gray.600">
+            {description.split('\n\n').map((paragraph, i) => (
+              <p style={{ marginBottom: 10 }} key={i}>
+                {paragraph
+                  .split('\n')
+                  .reduce((total, line) => [
+                    total,
+                    <br key="line" />,
+                    line,
+                  ])}
+              </p>
+            ))}
           </Text>
         </Box>
         <Flex
@@ -104,7 +149,7 @@ const PropertyDetails = ({
           )}
         </Flex>
         <Box>
-          {amenities.length && (
+          {amenities.length > 0 && amenities && (
             <Fragment>
               <Text fontSize={'2xl'} fontWeight="black" marginTop={5}>
                 Amenities
@@ -112,18 +157,20 @@ const PropertyDetails = ({
               <Flex flexWrap={'wrap'}>
                 {amenities.map((item) =>
                   item.amenities.map((amenity) => (
-                    <Text
+                    <MotionText
+                      whileHover={{ scale: 1.1 }}
                       key={amenity.text}
                       fontWeight="bold"
-                      color="blue.400"
+                      color="gray.700"
                       fontSize={'l'}
                       p="2"
                       bg={'gray.200'}
-                      m="1"
+                      m="2"
                       borderRadius={5}
+                      cursor="pointer"
                     >
                       {amenity.text}
-                    </Text>
+                    </MotionText>
                   )),
                 )}
               </Flex>

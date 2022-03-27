@@ -3,7 +3,11 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { Flex, Box, Text, Icon } from '@chakra-ui/react';
 import { BsFilter } from 'react-icons/bs';
-
+import {
+  motion,
+  AnimatePresence,
+  AnimateSharedLayout,
+} from 'framer-motion';
 import SearchFilters from '../components/SearchFilters';
 import Property from '../components/Property';
 
@@ -13,7 +17,6 @@ import { fetchApi, baseUrl } from '../utils/fetchApi';
 const Search = ({ properties }) => {
   const [searchFilters, setSearchFilters] = useState(false);
   const router = useRouter();
-  console.log(properties);
 
   return (
     <Box>
@@ -34,7 +37,21 @@ const Search = ({ properties }) => {
         <Text>Search Property by Filter</Text>
         <Icon paddingLeft={'2'} w="7" as={BsFilter} />
       </Flex>
-      {searchFilters && <SearchFilters />}
+      <AnimateSharedLayout>
+        <motion.div layout>
+          {searchFilters && (
+            <AnimatePresence>
+              <motion.div
+                initial={{ opacity: 0, top: 0 }}
+                animate={{ opacity: 1, delay: 1 }}
+                exit={{ opacity: 0, top: -100 }}
+              >
+                <SearchFilters isOpen={searchFilters} />
+              </motion.div>
+            </AnimatePresence>
+          )}
+        </motion.div>
+      </AnimateSharedLayout>
       <Text fontSize={'2xl'} p="4" fontWeight={'bold'}>
         Properties{' '}
         {router.query.purpose === 'for-sale'
@@ -53,6 +70,7 @@ const Search = ({ properties }) => {
           flexDirection={'column'}
           marginTop="5"
           marginBottom="5"
+          height={'100vh'}
         >
           <Image alt="no-result" src={noResult} />
           <Text fontSize={'2xl'} marginTop="3">
@@ -77,7 +95,7 @@ export async function getServerSideProps({ query }) {
   const categoryExternalID = query.categoryExternalID || '4';
 
   const data = await fetchApi(
-    `${baseUrl}/properties/list?locationExternalIDs=${locationExternalIDs}&purpose=${purpose}&categoryExternalID=${categoryExternalID}&bathsMin=${bathsMin}&rentFrequency=${rentFrequency}&priceMin=${minPrice}&priceMax=${maxPrice}&roomsMin=${roomsMin}&sort=${sort}&areaMax=${areaMax}`,
+    `${baseUrl}/properties/list?hitsPerPage=50&locationExternalIDs=${locationExternalIDs}&purpose=${purpose}&categoryExternalID=${categoryExternalID}&bathsMin=${bathsMin}&rentFrequency=${rentFrequency}&priceMin=${minPrice}&priceMax=${maxPrice}&roomsMin=${roomsMin}&sort=${sort}&areaMax=${areaMax}`,
   );
 
   return {

@@ -5,6 +5,7 @@ import { Box, Flex, Text, Avatar } from '@chakra-ui/react';
 import { FaBed, FaBath } from 'react-icons/fa';
 import { BsGridFill } from 'react-icons/bs';
 import { GoVerified } from 'react-icons/go';
+import { motion } from 'framer-motion';
 import millify from 'millify';
 
 import defaultImg from '../assets/images/house.jpeg';
@@ -23,15 +24,22 @@ const Property = ({
     externalID,
   },
 }) => {
+  const MotionFlex = motion(Flex);
   return (
     <Link href={`/property/${externalID}`} passHref>
-      <Flex
+      <MotionFlex
         flexWrap="wrap"
         w="420px"
         p="5"
         paddingTop="0"
         justifyContent="flex-start"
         cursor="pointer"
+        whileHover={{
+          scale: 1.05,
+        }}
+        whileTap={{
+          scale: 0.9,
+        }}
       >
         <Box>
           <Image
@@ -50,12 +58,14 @@ const Property = ({
             justifyContent="space-between"
           >
             <Flex alignItems="center">
-              <Box paddingRight="3" color="green.400">
-                {isVerified && <GoVerified />}
-              </Box>
+              {isVerified && (
+                <Box paddingRight="3" color="green.400">
+                  <GoVerified />
+                </Box>
+              )}
               <Text fontWeight="bold" fontSize="lg">
                 AED {millify(price)}
-                {rentFrequency && `/${rentFrequency}`}
+                {rentFrequency && ` / ${rentFrequency}`}
               </Text>
             </Flex>
             <Box>
@@ -64,13 +74,44 @@ const Property = ({
           </Flex>
           <Flex
             alignItems="center"
-            p="1"
-            justifyContent="space-between"
+            justifyContent="flex-start"
             w="250px"
             color="blue.400"
           >
-            {rooms} <FaBed /> | {baths} <FaBath /> | {millify(area)}{' '}
-            sqft <BsGridFill />
+            <Box>
+              <Text
+                display="flex"
+                alignItems="center"
+                w="50px"
+                justifyContent="space-around"
+              >
+                {rooms} <FaBed /> |
+              </Text>
+            </Box>
+            <Box>
+              <Box>
+                <Text
+                  display="flex"
+                  alignItems="center"
+                  w="50px"
+                  justifyContent="space-around"
+                >
+                  {baths} <FaBath /> |
+                </Text>
+              </Box>
+            </Box>
+            <Box>
+              <Box>
+                <Text
+                  display="flex"
+                  alignItems="center"
+                  w="100px"
+                  justifyContent="space-around"
+                >
+                  {millify(area)} sqft <BsGridFill />
+                </Text>
+              </Box>
+            </Box>
           </Flex>
           <Text
             fontSize="md"
@@ -82,7 +123,7 @@ const Property = ({
               : title}
           </Text>
         </Box>
-      </Flex>
+      </MotionFlex>
     </Link>
   );
 };

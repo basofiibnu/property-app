@@ -12,13 +12,14 @@ import {
 import { useRouter } from 'next/router';
 import { MdCancel } from 'react-icons/md';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 import { filterData, getFilterValues } from '../utils/filterData';
 import { baseUrl, fetchApi } from '../utils/fetchApi';
 
 import noResult from '../assets/images/noresult.svg';
 
-const SearchFilters = () => {
+const SearchFilters = ({ isOpen }) => {
   const [filters, setFilters] = useState(filterData);
   const [searchTerm, setSearchTerm] = useState('');
   const [locationData, setLocationData] = useState();
@@ -55,8 +56,28 @@ const SearchFilters = () => {
     }
   }, [searchTerm]);
 
+  const MotionFlex = motion(Flex);
+
   return (
-    <Flex bg="gray.100" justifyContent={'center'} flexWrap="wrap">
+    <MotionFlex
+      bg="gray.100"
+      justifyContent={'center'}
+      flexWrap="wrap"
+      layout
+      initial={{
+        opacity: 0,
+      }}
+      animate={{
+        opacity: 1,
+      }}
+      transition={{
+        type: 'easeInOut',
+        duration: 0.5,
+      }}
+      exit={{
+        opacity: 0,
+      }}
+    >
       {filters.map((filter) => (
         <Box key={filter.queryName}>
           <Select
@@ -64,7 +85,9 @@ const SearchFilters = () => {
             w="fit-content"
             p="2"
             onChange={(e) =>
-              searchProperties({ [filter.queryName]: e.target.value })
+              searchProperties({
+                [filter.queryName]: e.target.value,
+              })
             }
           >
             {filter?.items?.map((item) => (
@@ -91,7 +114,8 @@ const SearchFilters = () => {
               placeholder="Type Here"
               value={searchTerm}
               w="300px"
-              focusBorderColor="gray.300"
+              borderColor="gray.300"
+              focusBorderColor="gray.500"
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm !== '' && (
@@ -108,29 +132,30 @@ const SearchFilters = () => {
             {loading && <Spinner margin={'auto'} marginTop="3" />}
             {showLocations && (
               <Box height={'300px'} overflow="auto">
-                {locationData?.map((location) => (
-                  <Box
-                    key={location.id}
-                    onClick={() => {
-                      searchProperties({
-                        locationExternalIDs: location.externalID,
-                      });
-                      setShowLocations(false);
-                      setSearchTerm(location.name);
-                    }}
-                  >
-                    <Text
-                      cursor={'pointer'}
-                      bg="gray.200"
-                      p="2"
-                      borderBottom={'1px'}
-                      borderColor="gray.100"
+                {locationData &&
+                  locationData?.map((location) => (
+                    <Box
+                      key={location.id}
+                      onClick={() => {
+                        searchProperties({
+                          locationExternalIDs: location.externalID,
+                        });
+                        setShowLocations(false);
+                        setSearchTerm(location.name);
+                      }}
                     >
-                      {location.name}
-                    </Text>
-                  </Box>
-                ))}
-                {!loading && !locationData.length && (
+                      <Text
+                        cursor={'pointer'}
+                        bg="gray.200"
+                        p="2"
+                        borderBottom={'1px'}
+                        borderColor="gray.100"
+                      >
+                        {location.name}
+                      </Text>
+                    </Box>
+                  ))}
+                {!loading && !locationData && (
                   <Flex
                     justifyContent={'center'}
                     alignItems="center"
@@ -149,7 +174,7 @@ const SearchFilters = () => {
           </Flex>
         )}
       </Flex>
-    </Flex>
+    </MotionFlex>
   );
 };
 
